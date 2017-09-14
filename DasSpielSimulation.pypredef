@@ -1,0 +1,555 @@
+def Point(x ,y):
+        '''
+        @type x: float
+        @type y: float
+        @rtype: Point
+        '''
+getWindow() = Window
+def loadImage(filename=None):
+        '''
+        @summary: imports an image from the given file path
+        @type filename: str
+        @rtype: Image
+        '''
+def doCalibration():
+        '''
+        
+        '''
+def initCameraGrabber():
+        '''
+        @note: Camera mode has to be supported
+        '''
+def terminateCameraGrabber():
+        '''
+        @note: Camera mode has to be supported
+        '''
+def setImage4NoCameraMode(cvImage=None):
+        '''
+        @bug: causes an black/white area on the entire screen
+        @type cvImage: cvImage
+        '''
+def grabFromCamera():
+        '''
+        @summary: Snapshot of the Camera
+        @rtype: cvImage
+        '''
+def displayImage():
+        '''
+        @note: ?
+        '''
+def loadcvImage(filename=None):
+        '''
+        @summary: imports a cvImage from the given file path
+        @type filename: str
+        @rtype: cvImage
+        '''
+def savecvImage(cvImage=None, filename=None):
+        '''
+        @summary: saves an image on the given file path
+        @type fileName: str
+        @type cvImage: cvImage
+        '''
+def insertImageIntoImage(cvImage1=None, cvImage2=None, int1=None, int2=None):
+        '''
+        @type cvImage1: cvImage
+        @type cvImage2: cvImage
+        @type int1: int
+        @type int2: int
+        '''
+def getContourCentersInHSVImage():
+        '''
+        
+        '''
+def generateField(int1=None, int2=None, int3=None):
+        '''
+        @type int1: int
+        @type int2: int
+        @type int3: int
+        '''
+def createColorField(int1=None, int2=None, Color=None):
+        '''
+        @type int1: int
+        @type int2: int
+        @type Color: Color
+        '''
+def colorField(cvImage=None, int1=None, int2=None, int3=None, int4=None, Color=None):
+        '''
+        @type cvImage: cvImage
+        @type int1: int
+        @type int2: int
+        @type int3: int
+        @type int4: int
+        '''
+class Item:
+    image = Image
+    position = Point
+    width = int
+    height = int
+class ItemManager:
+    def addItem(self, Item=None):
+        '''
+        @summary: adds an item
+        @type Item: Item
+        @rtype: Item
+        '''
+    def createAndAddItem(self, Image=None, position=None):
+        '''
+        @summary: creates and adds a new Item
+        @type Image: Image
+        @type position: Point
+        @rtype: Item
+        '''
+    def removeItem(self, Item=None):
+        '''
+        @summary: removes an Item
+        @type Item: Item
+        '''
+    def collectGarbage(self):
+        '''
+        
+        '''
+    def getListOfItems(self):
+        '''
+        @summary: obtains a list of the Items
+        @rtype: list(Items)
+        @note: if you want to have access to the properties/functions of Item set a new variable for it, e.g. item0 = list[0]
+        '''
+class Point:
+    x = float
+    y = float
+    def __init__(self, x=None, y=None):
+        '''
+        @type x: float
+        @type y: float
+        @rtype: Point
+        '''
+class Color:
+    def __init__(self, r=None, g=None, b=None):
+        '''
+        @summary: Color coded in RGB (maybe)
+        @type r: float
+        @type g: float
+        @type b: float
+        @rtype: Color
+        '''
+class cvImage:
+    width = int
+    height = int
+    def clone(self):
+        '''
+        @rtype: cvImage
+        '''
+def getWindow():
+        '''
+        @summary: obtaining of a window
+        @rtype: Window
+        '''
+class Window:
+    width = int
+    height = int
+    name = str
+    lyingItemsManager = ItemManager
+    standingItemsManager = ItemManager
+    frontItemsManager = ItemManager
+    carManager = CarManager
+    def setSize(self, newwidth=None, newheight=None):
+        '''
+        @summary: changes the width/height in pixels
+        @type newwidth: int
+        @type newheight: int
+        @rtype: window
+        '''
+    def display(self):
+        '''
+        @summary: displays the Window
+        @rtype: window
+        @precondition: 'self.asyncHandleCarsAndBackground(Image)' has been executed
+        @precondition: 'self.asyncCalcViews()' has been executed
+        @precondition: 'self.wait4Asyncs()' has been executed
+        @precondition: 'self.calcFront()' has been executed
+        '''
+    def asyncHandleCarsAndBackground(self, cvImage=None):
+        '''
+        @type cvImage: Image
+        @summary: Searching for Cars and manipulating ground
+        @note: working in background, use 'self.wait4Asyncs()' to make sure its finished
+        '''
+    def searchCars(self, cvImage=None):
+        '''
+        @type cvImage: cvImage
+        '''
+    def calcBackground(self, cvImage=None):
+        '''
+        @type cvImage: cvImage
+        '''
+    def addCarPos2Background(self):
+        '''
+        
+        '''
+    def calcViews(self):
+        '''
+        
+        '''
+    def calcFront(self):
+        '''
+        @summary: inserts the pictures in the front
+        @precondition: 'self.asyncHandleCarsAndBackground(Image)' has been executed
+        @precondition: 'self.asyncCalcViews()' has been executed
+        @precondition: 'self.wait4Asyncs()' has been executed
+        '''
+    def asyncCalcViews(self):
+        '''
+        @summary: calculation of the different views
+        @note: working in background, use 'self.wait4Asyncs()' to make sure its finished
+        '''
+    def wait4Asyncs(self):
+        '''
+        @summary: waits until 'self.asyncCalcViews()' or 'self.asyncHandleCarsAndBackground(Image)' is finished
+        @note: contained in 'self.asyncCalcViews()'
+        '''
+    def updateViews(self):
+        '''
+        
+        '''
+    def close(self):
+        '''
+        @summary: window is closed
+        '''
+    def createView(self, width, height, x, y):
+        '''
+        @type width: int
+        @type height: int
+        @type x: int
+        @type y: int
+        @summary: creates a seperate view in the selected area
+        @note: views have to be in the window and can't overlap
+        @rtype: View
+        '''
+    def getListOfViews(self):
+        '''
+        @summary: obtains a list of the views
+        @rtype: list(View)
+        @note: if you want to have access to the properties/functions of View set a new variable for it, e.g. view0 = list[0]
+        '''
+    def removeView(self, view):
+        '''
+        @type view: View
+        @summary: removes a view
+        '''
+    def collectGarbage(self):
+        '''
+        
+        '''
+class View:
+    position = Point
+    angle = float
+    angleInDegree = float
+    standingItemsManager = ItemManager
+    showLyingItems = True/False
+    showStandingItems = True/False
+    reverseDisplayorder = True/False
+    minItemDisplayPosition = True/False
+    maxItemDisplayPosition = True/False
+    def setViewFromCar(self, Car=None):
+        '''
+        @summary: the position of the View is placed onto the Car
+        @type Car: ACar
+        '''
+    def getSrcTransBoxCoord(self, corner=None):
+        '''
+        @summary: used to detect the coordinates around the car
+        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
+        @note: is often combined with 'self.setSrcTransBoxCoord()'
+        @type corner: int
+        @rtype: Point
+        '''
+    def getDestBoxCoords(self, corner=None):
+        '''
+        @summary: used to detect the destination coordinates
+        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
+        @note: is often combined with 'self.setDestBoxCoords()'
+        @type corner: int
+        @rtype: Point
+        '''
+    def setSrcTransBoxCoord(self, corner=None, position=None):
+        '''
+        @summary: used to distort the perspective of the player
+        @note: use 'self.getSrcTransBoxCoord()' beforehand to get the original coordinates
+        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
+        @type corner: int
+        @type position: Point
+        '''
+    def setDestBoxCoords(self, corner=None, position=None):
+        '''
+        @summary: used to distort the perspective of the player
+        @note: use 'self.getDestBoxCoords()' beforehand to get the original coordinates
+        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
+        @type corner: int
+        @type position: Point
+        '''
+class CarManager:
+    def loadCarConfigurations(self, filename=None):
+        '''
+        @type filename: str
+        '''
+    def getListOfCars(self):
+        '''
+        @summary: obtains a list of the two cars
+        @rtype: list(ACar)
+        @note: if you want to have access to the properties/functions of ACar set a new variable for it, e.g. car0 = list[0]
+        '''
+    def collectGarbage(self):
+        '''
+        
+        '''
+    def createVirtualCar(self):
+        '''
+        @rtype VirtualCar
+        '''
+    def createVirtualCarWithImage(self, filename=None):
+        '''
+        @type filename: str
+        @rtype: VirtualCar
+        '''
+class Image:
+    cvImage = cvImage
+    width = int
+    height = int
+    def createResizedCopy(self, newWidth=None, newHeight=None):
+        '''
+        @summary: creates a copy with new lenghts
+        @type newWidth: int
+        @type newHeight: int
+        @rtype: Image
+        '''
+    def createRotatedCopyWithAngleInDegree(self, angleDegree=None):
+        '''
+        @summary: creates a rotated copy (angle given in degree)
+        @type angleDegree: float
+        @rtype: Image
+        '''
+    def createRotatedCopyWithAngleInRadian(self, angleRadian=None):
+        '''
+        @summary: creates a rotated copy (angle given in randians)
+        @type angleRadian: float
+        @rtype: Image
+        '''
+    def saveImage(self, fileName=None):
+        '''
+        @summary: saves an image on the given file path
+        @type fileName: str
+        '''
+class ACar:
+    dispImage = Image
+    position = Point
+    angle = float
+    angleInDegree = float
+    throttle = int
+    lowerThrottleLimitForward = int
+    upperThrottleLimitForward = int
+    lowerThrottleLimitBackward = int
+    upperThrottleLimitBackward = int
+    throttleOffset = int
+    throttleSwap = True/False
+    steeringAngle = int
+    lowerSteeringAngleLimitLeft = int
+    upperSteeringAngleLimitLeft = int
+    lowerSteeringAngleLimitRight = int
+    upperSteeringAngleLimitRight = int
+    steeringAngleOffset = int
+    steeringSwap = True/False
+    def setLowerThrottleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setUpperThrottleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setLowerSteeringAngleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setUpperSteeringAngleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def connectRemote(self):
+        '''
+        @summary: attempts to connect to the remote
+        '''
+    def disconnectRemote(self):
+        '''
+        @summary: removes the connection to the remote
+        '''
+    def isRemoteOn(self):
+        '''
+        @summary: checks if the remote is switched on
+        @note: usually used after 'self.connectRemote()' or 'self.disconnectRemote()'
+        '''
+    def isButtonPressed(self):
+        '''
+        @summary: checks out if the button on the remote is pressed at the moment
+        @note: worse than 'self.isButtonPressed' because there can occur abnormalities in the electric signal
+        '''
+    def wasButtonPressedSinceLastCheck(self):
+        '''
+        @summary: checks out if the button on the remote was pressed since the last check
+        @note: better than 'self.isButtonPressed' because their can occur abnormalities in the electric signal
+        '''
+    def setRemoteControl(self):
+        '''
+        @summary: switches to control with computer
+        @note: use 'self.setManuelControl()' to switch back
+        '''
+    def setManuelControl(self):
+        '''
+        @summary: switches to control with original remote
+        @note: use 'self.setRemoteControl()' to switch back
+        '''
+class VirtualCar:
+    dispImage = Image
+    position = Point
+    angle = float
+    angleInDegree = float
+    throttle = int
+    lowerThrottleLimitForward = int
+    upperThrottleLimitForward = int
+    lowerThrottleLimitBackward = int
+    upperThrottleLimitBackward = int
+    throttleOffset = int
+    throttleSwap = True/False
+    steeringAngle = int
+    lowerSteeringAngleLimitLeft = int
+    upperSteeringAngleLimitLeft = int
+    lowerSteeringAngleLimitRight = int
+    upperSteeringAngleLimitRight = int
+    steeringAngleOffset = int
+    steeringSwap = True/False
+    def setLowerThrottleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setUpperThrottleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setLowerSteeringAngleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setUpperSteeringAngleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def connectRemote(self):
+        '''
+        @summary: attempts to connect to the remote
+        '''
+    def disconnectRemote(self):
+        '''
+        @summary: removes the connection to the remote
+        '''
+    def isRemoteOn(self):
+        '''
+        @summary: checks if the remote is switched on
+        @note: usually used after 'self.connectRemote()' or 'self.disconnectRemote()'
+        '''
+    def isButtonPressed(self):
+        '''
+        @summary: checks out if the button on the remote is pressed at the moment
+        @note: worse than 'self.isButtonPressed' because there can occur abnormalities in the electric signal
+        '''
+    def wasButtonPressedSinceLastCheck(self):
+        '''
+        @summary: checks out if the button on the remote was pressed since the last check
+        @note: better than 'self.isButtonPressed' because their can occur abnormalities in the electric signal
+        '''
+    def setRemoteControl(self):
+        '''
+        @summary: switches to control with computer
+        @note: use 'self.setManuelControl()' to switch back
+        '''
+    def setManuelControl(self):
+        '''
+        @summary: switches to control with original remote
+        @note: use 'self.setRemoteControl()' to switch back
+        '''
+class RealCar:
+    dispImage = Image
+    position = Point
+    angle = float
+    angleInDegree = float
+    throttle = int
+    lowerThrottleLimitForward = int
+    upperThrottleLimitForward = int
+    lowerThrottleLimitBackward = int
+    upperThrottleLimitBackward = int
+    throttleOffset = int
+    throttleSwap = True/False
+    steeringAngle = int
+    lowerSteeringAngleLimitLeft = int
+    upperSteeringAngleLimitLeft = int
+    lowerSteeringAngleLimitRight = int
+    upperSteeringAngleLimitRight = int
+    steeringAngleOffset = int
+    steeringSwap = True/False
+    minPointDistance =
+    maxPointDistance =
+    frontAreaMinSize =
+    frontAreaMaxSize =
+    frontMinHSV =
+    frontMaxHSV =
+    rearAreaMinSize =
+    rearAreaMaxSize =
+    rearMinHSV =
+    rearMaxHSV =
+    def setLowerThrottleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setUpperThrottleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setLowerSteeringAngleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def setUpperSteeringAngleLimit(self, limit=None):
+        '''
+        @type limit = int
+        '''
+    def connectRemote(self):
+        '''
+        @summary: attempts to connect to the remote
+        '''
+    def disconnectRemote(self):
+        '''
+        @summary: removes the connection to the remote
+        '''
+    def isRemoteOn(self):
+        '''
+        @summary: checks if the remote is switched on
+        @note: usually used after 'self.connectRemote()' or 'self.disconnectRemote()'
+        '''
+    def isButtonPressed(self):
+        '''
+        @summary: checks out if the button on the remote is pressed at the moment
+        @note: worse than 'self.isButtonPressed' because there can occur abnormalities in the electric signal
+        '''
+    def wasButtonPressedSinceLastCheck(self):
+        '''
+        @summary: checks out if the button on the remote was pressed since the last check
+        @note: better than 'self.isButtonPressed' because their can occur abnormalities in the electric signal
+        '''
+    def setRemoteControl(self):
+        '''
+        @summary: switches to control with computer
+        @note: use 'self.setManuelControl()' to switch back
+        '''
+    def setManuelControl(self)
+        '''
+        @summary: switches to control with original remote
+        @note: use 'self.setRemoteControl()' to switch back
+        '''
