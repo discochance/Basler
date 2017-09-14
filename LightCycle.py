@@ -6,6 +6,7 @@ except ImportError:
 import keyboard
 import math
 import time
+from GameHelper import limitToUInt8
 
 # This class represents a bike/car that behaves similar to the bikes from the game/movie TRON.
 # It handles the graphics of the bike.
@@ -51,13 +52,15 @@ class LightCycle():
         self.STEERING_LIMIT_ABS = 100
 
         self._maxThrottle = 100
-        self._minThrottle = 20
+        self._minThrottle = 30
         self._car.throttle = 0
         self.PIXEL_PER_METER = 400
         self._tangentialSpeedKph = 0.0
         self._calculationStepDistanceMeters = 0.0
         self._lastPosition = self._car.position
         self._lastCallTimeSeconds = 0
+
+        # self._transmitters = self._remoteControl.get_connected_transmitter_ips()
 
     def getPosition(self):
         return self._car.position
@@ -77,30 +80,45 @@ class LightCycle():
         self._maxThrottle = 0
 
     def handleSteeringInputs(self):
-        if (self._isVirtual):
-#             if keyboard.is_pressed(self._forwardKey):
-#                 self._car.throttle = self._maxThrottle
-#             else:
-#                 self._car.throttle = self._minThrottle
+        useRemote = True
+        if (useRemote):
+            if self._carId == 0:
+                ip = "192.168.0.100"
+            else:
+                ip = "192.168.0.101"
 
-            self._car.throttle = (self._remoteControl.get_in_throttle("192.168.0.100") - 128)
+            actual_throttle = self._remoteControl.get_in_throttle(ip) - 128
+            actual_steer = self._remoteControl.get_in_steer(ip) - 128
 
-            # Limit keyboard repetition speed
-#             if self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and keyboard.is_pressed(self._turnLeftKey):
-#                 self._actualDrivingAngleId = (self._actualDrivingAngleId + self.DRIVING_AGLE_COUNT - 1) % self.DRIVING_AGLE_COUNT
-#                 self._keyboardReleasedCounter = 0
-#             elif self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and keyboard.is_pressed(self._turnRightKey):
-#                 self._actualDrivingAngleId = (self._actualDrivingAngleId + self.DRIVING_AGLE_COUNT + 1) % self.DRIVING_AGLE_COUNT
-#                 self._keyboardReleasedCounter = 0
-#             else:
-#                 self._keyboardReleasedCounter += 1
-#                 if self._keyboardReleasedCounter > self.KEYBOARD_RELEASE_LIMIT:
-#                     self._keyboardReleasedCounter = self.KEYBOARD_RELEASE_LIMIT
+            if actual_throttle > self._minThrottle:
+                self._car.throttle = actual_throttle
+            elif actual_throttle > self._maxThrottle:
+                actual_throttle = self._maxThrottle
+            else:
+                self._car.throttle = self._minThrottle
 
-            if self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and self._remoteControl.get_in_steer("192.168.0.100") < 50:
+            if self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and actual_steer < -100:
                 self._actualDrivingAngleId = (self._actualDrivingAngleId + self.DRIVING_AGLE_COUNT - 1) % self.DRIVING_AGLE_COUNT
                 self._keyboardReleasedCounter = 0
-            elif self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and self._remoteControl.get_in_steer("192.168.0.100") > 200:
+            elif self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and actual_steer > 100:
+                self._actualDrivingAngleId = (self._actualDrivingAngleId + self.DRIVING_AGLE_COUNT + 1) % self.DRIVING_AGLE_COUNT
+                self._keyboardReleasedCounter = 0
+            else:
+                self._keyboardReleasedCounter += 1
+                if self._keyboardReleasedCounter > self.KEYBOARD_RELEASE_LIMIT:
+                    self._keyboardReleasedCounter = self.KEYBOARD_RELEASE_LIMIT
+
+        else:
+            # control by keyboard
+            if keyboard.is_pressed(self._forwardKey):
+                self._car.throttle = self._maxThrottle
+            else:
+                self._car.throttle = self._minThrottle
+            # Limit keyboard repetition speed
+            if self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and keyboard.is_pressed(self._turnLeftKey):
+                self._actualDrivingAngleId = (self._actualDrivingAngleId + self.DRIVING_AGLE_COUNT - 1) % self.DRIVING_AGLE_COUNT
+                self._keyboardReleasedCounter = 0
+            elif self._keyboardReleasedCounter >= self.KEYBOARD_RELEASE_LIMIT and keyboard.is_pressed(self._turnRightKey):
                 self._actualDrivingAngleId = (self._actualDrivingAngleId + self.DRIVING_AGLE_COUNT + 1) % self.DRIVING_AGLE_COUNT
                 self._keyboardReleasedCounter = 0
             else:
@@ -134,4 +152,13 @@ class LightCycle():
         elif steering > self.STEERING_LIMIT_ABS:
             steering = self.STEERING_LIMIT_ABS
         self._car.steeringAngle = steering
+        if self._carId == 0:
+            ip = "192.168.0.100"
+        else:
+            ip = "192.168.0.101"
+        steer_override = limitToUInt8((steering * 128 // 100) + 128)
+        throttle_override = limitToUInt8((self._car.throttle * 128 // 100) + 128)
+        self._remoteControl.set_override_out_both(ip, steer_override, throttle_override)
+        if self._carId == 0:
+            print("%s  %f  %d  %d" % (ip, self._car.angleInDegree, throttle_override, steer_override))
 

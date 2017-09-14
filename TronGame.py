@@ -18,7 +18,7 @@ def main():
     # Window renderer resolution parameters
     MAIN_WINDOW_WIDTH_PX = 1920
     MAIN_WINDOW_HEIGHT_PX = 1200
-
+    # BAPI.doCalibrationToFile(2, "C:\\Hackathon\\workspace\\Tron\\Calib\\")
     mainWindow = initMainWindow("Tron", MAIN_WINDOW_WIDTH_PX, MAIN_WINDOW_HEIGHT_PX)
 
     # standingItems = mainWindow.standingItemsManager
