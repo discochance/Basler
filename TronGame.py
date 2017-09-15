@@ -18,7 +18,7 @@ def main():
     # Window renderer resolution parameters
     MAIN_WINDOW_WIDTH_PX = 1920
     MAIN_WINDOW_HEIGHT_PX = 1200
-
+    # BAPI.doCalibrationToFile(2, "C:\\Hackathon\\workspace\\Tron\\Calib\\")
     mainWindow = initMainWindow("Tron", MAIN_WINDOW_WIDTH_PX, MAIN_WINDOW_HEIGHT_PX)
 
     # standingItems = mainWindow.standingItemsManager
@@ -28,10 +28,16 @@ def main():
     frontItems.createAndAddItem(BAPI.loadImage(".\\Bilder\\Basler_Tron.png"), BAPI.Point(320, 5))
 
     # game field size parameters
-    FIELD_WIDTH_PX = 1800
+    FIELD_WIDTH_PX = 1880
     FIELD_HEIGHT_PX = 1200
 
     bikes = initBikes()
+    img = BAPI.grabFromCamera()
+    mainWindow.asyncHandleCarsAndBackground(img)
+    mainWindow.wait4Asyncs()
+    for bike in bikes:
+        bike.setAngleIdToNearestMatch()
+
     bikeTrails = initBikeTrails(lyingItems, bikes)
 
     views = initViews(mainWindow, bikes)
@@ -92,7 +98,7 @@ def initBikes():
              'turnRightKey':'d',
              'specialAbilityKey':'e' }
 
-    bike0 = LightCycle(0, bike0Keys, BAPI.Point(1500, 300), 2)
+    bike0 = LightCycle(0, bike0Keys, BAPI.Point(1500, 300))
 
     bike1Keys = {'forwardKey':'i',
                  'backwardKey':'k',
@@ -100,9 +106,11 @@ def initBikes():
                  'turnRightKey':'l',
                  'specialAbilityKey':'o' }
 
-    bike1 = LightCycle(1, bike1Keys, BAPI.Point(100, 300), 0)
+    bike1 = LightCycle(1, bike1Keys, BAPI.Point(100, 300))
 
-    return (bike0, bike1)
+    bikes = (bike0, bike1)
+
+    return bikes
 
 
 def initBikeTrails(graphicsObjectManager, bikes):
