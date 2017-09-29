@@ -1,3 +1,4 @@
+from DasSpielSimulation import VirtualCar
 try:
     import DasSpiel as BAPI
 except ImportError:
@@ -17,7 +18,7 @@ class LightCycle():
     BIKE_STANDARD_IMAGES = (BAPI.loadImage(".\\Bilder\\Pfeil_orange-2.png").createResizedCopy(30, 64).createRotatedCopyWithAngleInDegree(270),
                             BAPI.loadImage(".\\Bilder\\Pfeil_hellblau-2.png").createResizedCopy(30, 64).createRotatedCopyWithAngleInDegree(270))
 
-    def __init__(self, carId, dictOfKeys, startPosition):
+    def __init__(self, carId, dictOfKeys, startPosition, startAngleId):
         self._carId = carId
         self._car = BAPI.getWindow().carManager.getListOfCars()[carId]
 
@@ -38,11 +39,11 @@ class LightCycle():
 
         # Steering parameters
         self.DRIVING_AGLE_COUNT = 4
-        self._possibleDrivingAnglesRad = []
-        self._possibleDrivingAnglesRad.append(math.radians(0))
-        self._possibleDrivingAnglesRad.append(math.radians(90))
-        self._possibleDrivingAnglesRad.append(math.radians(180))
-        self._possibleDrivingAnglesRad.append(math.radians(270))
+        self._actualDrivingAngleId = startAngleId
+        self._possibleDrivingAnglesRad = [math.radians(0),
+                                          math.radians(90),
+                                          math.radians(180),
+                                          math.radians(270)]
 
         # Steering control parameters
         self._feedbackControlFactorP = 4.0
@@ -59,7 +60,17 @@ class LightCycle():
         self._lastPosition = self._car.position
         self._lastCallTimeSeconds = 0
 
-        self.setAngleIdToNearestMatch()
+        if (self._isVirtual):
+            # initialize angle of virtual car
+            self._car.angle = math.radians(self._possibleDrivingAnglesRad[self._actualDrivingAngleId])
+        else:
+            # synchronize car angle id with real car orientation
+            self.setAngleIdToClosestMatchingAngle()
+
+        if self._carId == 0:
+                self._remoteIp = "192.168.0.100"
+        else:
+                self._remoteIp = "192.168.0.101"
 
 
     def getPosition(self):
@@ -74,13 +85,15 @@ class LightCycle():
     def getCarObject(self):
         return self._car
 
+    # Things to do when the car crashes an objects and gets "destroyed"
     def destroy(self):
         self._car.throttle = 0
         self._minThrottle = 0
         self._maxThrottle = 0
 
-    def setAngleIdToNearestMatch(self):
-        # FIXME CK: Buggy
+    # The actual car angle is used to calculate the angle and its angle id
+    # that are closest to the actual car orientation angle.
+    def setAngleIdToClosestMatchingAngle(self):
         carAngleRad = self._car.angle
         minDeltaRad = math.pi
         newAngleId = 0
@@ -92,15 +105,11 @@ class LightCycle():
         self._actualDrivingAngleId = newAngleId
 
     def handleSteeringInputs(self):
-        useRemote = True
+        useRemote = False
         if (useRemote):
-            if self._carId == 0:
-                ip = "192.168.0.100"
-            else:
-                ip = "192.168.0.101"
 
-            actual_throttle = self._remoteControl.get_in_throttle(ip) - 128
-            actual_steer = self._remoteControl.get_in_steer(ip) - 128
+            actual_throttle = self._remoteControl.get_in_throttle(self._remoteIp) - 128
+            actual_steer = self._remoteControl.get_in_steer(self._remoteIp) - 128
 
             if actual_throttle > self._minThrottle and actual_throttle < self._maxThrottle:
                 self._car.throttle
@@ -162,11 +171,8 @@ class LightCycle():
         elif steering > self.STEERING_LIMIT_ABS:
             steering = self.STEERING_LIMIT_ABS
         self._car.steeringAngle = steering
-        if self._carId == 0:
-            ip = "192.168.0.100"
-        else:
-            ip = "192.168.0.101"
+
         steer_override = limitToUInt8((steering * 128 // 100) + 128)
         throttle_override = limitToUInt8((self._car.throttle * 128 // 100) + 128)
-        self._remoteControl.set_override_out_both(ip, steer_override, throttle_override)
+        self._remoteControl.set_override_out_both(self._remoteIp, steer_override, throttle_override)
 

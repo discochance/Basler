@@ -4,7 +4,7 @@ try:
     import DasSpiel as BAPI
 except ImportError:
     import DasSpielSimulation as BAPI
-# BAPI may stand for Basler API :-)
+# BAPI may stand for "Basler API" :-)
 
 import GameSounds
 from GameHelper import calcDistance
@@ -18,7 +18,7 @@ def main():
     # Window renderer resolution parameters
     MAIN_WINDOW_WIDTH_PX = 1920
     MAIN_WINDOW_HEIGHT_PX = 1200
-    # BAPI.doCalibrationToFile(2, "C:\\Hackathon\\workspace\\Tron\\Calib\\")
+
     mainWindow = initMainWindow("Tron", MAIN_WINDOW_WIDTH_PX, MAIN_WINDOW_HEIGHT_PX)
 
     # standingItems = mainWindow.standingItemsManager
@@ -27,16 +27,19 @@ def main():
     frontItems = mainWindow.frontItemsManager
     frontItems.createAndAddItem(BAPI.loadImage(".\\Bilder\\Basler_Tron.png"), BAPI.Point(320, 5))
 
-    # game field size parameters
+    # game field size parameters, need to be same size as camera resolution
     FIELD_WIDTH_PX = 1880
     FIELD_HEIGHT_PX = 1200
+    BAPI.setImage4NoCameraMode(BAPI.generateField(FIELD_WIDTH_PX, FIELD_HEIGHT_PX, 40))
 
     bikes = initBikes()
+
+    # one grab and calculation to determine the cars positions and angles
     img = BAPI.grabFromCamera()
     mainWindow.asyncHandleCarsAndBackground(img)
     mainWindow.wait4Asyncs()
     for bike in bikes:
-        bike.setAngleIdToNearestMatch()
+        bike.setAngleIdToClosestMatchingAngle()
 
     bikeTrails = initBikeTrails(lyingItems, bikes)
 
@@ -88,6 +91,7 @@ def initMainWindow(name, fieldWidthPx, fieldHeightPx):
     mainWindow = BAPI.getWindow()
     mainWindow.setSize(fieldWidthPx, fieldHeightPx)
     mainWindow.name = name
+    mainWindow.showFPS = False
     return mainWindow
 
 
@@ -98,7 +102,7 @@ def initBikes():
              'turnRightKey':'d',
              'specialAbilityKey':'e' }
 
-    bike0 = LightCycle(0, bike0Keys, BAPI.Point(1500, 300))
+    bike0 = LightCycle(0, bike0Keys, BAPI.Point(1500, 300), 2)
 
     bike1Keys = {'forwardKey':'i',
                  'backwardKey':'k',
@@ -106,7 +110,7 @@ def initBikes():
                  'turnRightKey':'l',
                  'specialAbilityKey':'o' }
 
-    bike1 = LightCycle(1, bike1Keys, BAPI.Point(100, 300))
+    bike1 = LightCycle(1, bike1Keys, BAPI.Point(100, 300), 0)
 
     bikes = (bike0, bike1)
 
