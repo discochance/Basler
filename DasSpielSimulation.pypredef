@@ -1,181 +1,169 @@
-getWindow() = Window
-
-def loadImage(filename=None):
+def loadImage(filename):
         '''
-        @summary: imports an image from the given file path
+        @summary: imports an image from the given file path.
         @type filename: str
         @rtype: Image
         '''
 
-def doCalibration():
+def doCalibrationToFile(numOfCars, filename):
         '''
-        
-        '''
-
-def initCameraGrabber():
-        '''
-        @note: Camera mode has to be supported
+        @summary: start a calibration and save the calibration data into the given file.
+        @type numOfCars: int
+        @type filename: str
         '''
 
-def terminateCameraGrabber():
+def setImage4NoCameraMode(newImage):
         '''
-        @note: Camera mode has to be supported
-        '''
-
-def setImage4NoCameraMode(cvImage=None):
-        '''
-        @bug: causes an black/white area on the entire screen
-        @type cvImage: cvImage
+        @summary: sets a new ground image for the no camera mode.
+        @type newImage: cvImage
         '''
 
 def grabFromCamera():
         '''
-        @summary: Snapshot of the Camera
+        @summary: graps a new image from the camera.
         @rtype: cvImage
         '''
 
-def displayImage():
+def displayImage(image, windowname):
         '''
-        @note: ?
+        @summary: displays an cvImage in a given window name.
+        @type image: cvImage
+        @type windowname: str
         '''
 
-def loadcvImage(filename=None):
+def closeWindow(windowname):
         '''
-        @summary: imports a cvImage from the given file path
+        @summary: closes a given window name.
+        @type windowname: str
+        '''
+
+def loadcvImage(filename):
+        '''
+        @summary: imports a cvImage from the given file path.
         @type filename: str
         @rtype: cvImage
         '''
 
-def savecvImage(cvImage=None, filename=None):
+def savecvImage(cvImage, filename):
         '''
-        @summary: saves an image on the given file path
-        @type fileName: str
+        @summary: saves a cvImage on the given file path.
         @type cvImage: cvImage
+        @type filename: str
         '''
 
-def insertImageIntoImage(cvImage1=None, cvImage2=None, int1=None, int2=None):
+def insertImageIntoImage(destinationCvImage, sourceCvImage, xOffset, yOffset):
         '''
-        @type cvImage1: cvImage
-        @type cvImage2: cvImage
-        @type int1: int
-        @type int2: int
-        '''
-
-def getContourCentersInHSVImage():
-        '''
-        
-        '''
-def generateField(int1=None, int2=None, int3=None):
-        '''
-        @type int1: int
-        @type int2: int
-        @type int3: int
+        @summary: insert a cvImage into another cvImage.
+        @type destinationCvImage: cvImage
+        @type sourceCvImage: cvImage
+        @type xOffset: int
+        @type yOffset: int
         '''
 
-def createColorField(int1=None, int2=None, Color=None):
+def generateField(width, height, boxSize):
         '''
-        @type int1: int
-        @type int2: int
-        @type Color: Color
-        '''
-
-def colorField(cvImage=None, int1=None, int2=None, int3=None, int4=None, Color=None):
-        '''
-        @type cvImage: cvImage
-        @type int1: int
-        @type int2: int
-        @type int3: int
-        @type int4: int
+        @summary: generate a cvImage with a checkerboard pattern.
+        @type width: int
+        @type height: int
+        @type boxSize: int
+        @rtype: cvImage
         '''
 
+def createColorField(width, height, color):
+        '''
+        @summary: generate a cvImage with the given color.
+        @type width: int
+        @type height: int
+        @type color: Color
+        @rtype: cvImage
+        '''
+
+def colorField(image, xOffset, yOffset, width, height, color):
+        '''
+        @summary: colors a given area of a given cvImage with a given color.
+        @type image: cvImage
+        @type xOffset: int
+        @type yOffset: int
+        @type width: int
+        @type height: int
+        @type color: Color
+        '''
 
 class Item:
-
     image = Image
     position = Point
     width = int
     height = int
 
-
 class ItemManager:
-
-    def addItem(self, Item=None):
+    def addItem(self, item):
         '''
-        @summary: adds an item
-        @type Item: Item
-        @rtype: Item
+        @summary: adds an item to the list of items that are displayed by the ItemManager.
+        @type item: Item
         '''
 
-    def createAndAddItem(self, Image=None, position=None):
+    def createAndAddItem(self, image, position):
         '''
-        @summary: creates and adds a new Item
-        @type Image: Image
+        @summary: creates an Item based on the given Image at the defined position.
+        @type image: Image
         @type position: Point
         @rtype: Item
         '''
 
-    def removeItem(self, Item=None):
+    def removeItem(self, item):
         '''
-        @summary: removes an Item
-        @type Item: Item
+        @summary: removes the given Item from the ItemManager, so it won't be displayed anymore.
+        @type item: Item
         '''
 
     def collectGarbage(self):
         '''
-        
+        @summary: removes items from the ItemManager, that are no longer referenced from python objects.
         '''
 
     def getListOfItems(self):
         '''
-        @summary: obtains a list of the Items
-        @rtype: list(Items)
+        @summary: obtains a list of the all referenced Items.
+        @rtype: list(Item)
         @note: if you want to have access to the properties/functions of Item set a new variable for it, e.g. item0 = list[0]
         '''
 
-
 class Point:
-
     x = float
     y = float
-    def __init__(self, x=None, y=None):
+    def __init__(self, x, y):
         '''
         @type x: float
         @type y: float
         @rtype: Point
         '''
 
-
 class Color:
-
-    def __init__(self, r=None, g=None, b=None):
+    def __init__(self, r, g, b):
         '''
-        @summary: Color coded in RGB (maybe)
+        @summary: Color coded in RGB (or in HSV for the car detection).
         @type r: float
         @type g: float
         @type b: float
         @rtype: Color
         '''
 
-
 class cvImage:
-
     width = int
     height = int
-
     def clone(self):
         '''
+        @summary: create a copy of the cvImage, which can be edited without regards.
         @rtype: cvImage
         '''
 
-    def getWindow():
+def getWindow():
         '''
-        @summary: obtaining of a window
+        @summary: obtain the main window, which is used for the game.
         @rtype: Window
         '''
 
-
 class Window:
-
     width = int
     height = int
     name = str
@@ -183,56 +171,59 @@ class Window:
     standingItemsManager = ItemManager
     frontItemsManager = ItemManager
     carManager = CarManager
-    showFPS = boolean
-    
-    def setSize(self, newwidth=None, newheight=None):
+
+    def setSize(self, newWidth, newHeight):
         '''
-        @summary: changes the width/height in pixels
-        @type newwidth: int
-        @type newheight: int
-        @rtype: window
+        @summary: changes the width/height of the window in pixels.
+        @type newWidth: int
+        @type newHeight: int
         '''
 
     def display(self):
         '''
-        @summary: displays the Window
-        @rtype: window
+        @summary: displays the latest calculated image for the window. Returns the pressed key as integer.
+        @rtype: int
         @precondition: 'self.asyncHandleCarsAndBackground(Image)' has been executed
         @precondition: 'self.asyncCalcViews()' has been executed
         @precondition: 'self.wait4Asyncs()' has been executed
         @precondition: 'self.calcFront()' has been executed
         '''
 
-    def asyncHandleCarsAndBackground(self, cvImage=None):
+    def asyncHandleCarsAndBackground(self, cvImage):
         '''
+        @summary: searches for Cars and manipulates the ground.
         @type cvImage: Image
-        @summary: Searching for Cars and manipulating ground
-        @note: working in background, use 'self.wait4Asyncs()' to make sure its finished
+        @note: works in the background, use 'self.wait4Asyncs()' to make sure its finished.
         '''
 
-    def searchCars(self, cvImage=None):
+    def searchCars(self, image):
         '''
-        @type cvImage: cvImage
+        @summary: blocking call for searching the cars in the given image.
+        @type image: cvImage
+        @note: the recommendation is to use 'self.asyncHandleCarsAndBackground(cvImage)' instead.
         '''
 
-    def calcBackground(self, cvImage=None):
+    def calcBackground(self, image):
         '''
-        @type cvImage: cvImage
+        @summary: blocking call for editing the ground with the lying items in it.
+        @type image: cvImage
+        @note: the recommendation is to use 'self.asyncHandleCarsAndBackground(cvImage)' instead.
         '''
 
     def addCarPos2Background(self):
         '''
-        
+        @summary: displays the car images on the ground.
+        @note: this is done automatically by the 'self.calcViews()' and 'self.asyncCalcViews()' functions.
         '''
 
     def calcViews(self):
         '''
-        
+        @summary: blocking call for calculation of the standing items and the perspective of the views.
         '''
 
     def calcFront(self):
         '''
-        @summary: inserts the pictures in the front
+        @summary: inserts the pictures in the front.
         @precondition: 'self.asyncHandleCarsAndBackground(Image)' has been executed
         @precondition: 'self.asyncCalcViews()' has been executed
         @precondition: 'self.wait4Asyncs()' has been executed
@@ -240,58 +231,54 @@ class Window:
 
     def asyncCalcViews(self):
         '''
-        @summary: calculation of the different views
-        @note: working in background, use 'self.wait4Asyncs()' to make sure its finished
+        @summary: asynchronously call for calculation of the standing items and the perspective of the views.
+        @note: working in background, use 'self.wait4Asyncs()' to make sure its finished.
         '''
 
     def wait4Asyncs(self):
         '''
-        @summary: waits until 'self.asyncCalcViews()' or 'self.asyncHandleCarsAndBackground(Image)' is finished
+        @summary: wait for asynchronous functions like 'self.asyncCalcViews()' or 'self.asyncHandleCarsAndBackground(Image)' to finish.
+        @note: contained in 'self.asyncHandleCarsAndBackground()'
+        @note: contained in 'self.calcFront()'
         @note: contained in 'self.asyncCalcViews()'
-        '''
-
-    def updateViews(self):
-        '''
-        
+        @note: contained in 'self.display()'
         '''
 
     def close(self):
         '''
-        @summary: window is closed
+        @summary: closes the window.
         '''
 
-    def createView(self, width, height, x, y):
+    def createView(self, width, height, xOffset, yOffset):
         '''
+        @summary: creates a view inside of the window area.
+        @note: views have to be in the window and shouldn't overlap.
         @type width: int
         @type height: int
-        @type x: int
-        @type y: int
-        @summary: creates a seperate view in the selected area
-        @note: views have to be in the window and can't overlap
+        @type xOffset: int
+        @type yOffset: int
         @rtype: View
         '''
 
     def getListOfViews(self):
         '''
-        @summary: obtains a list of the views
+        @summary: obtains a list of the all referenced Views.
         @rtype: list(View)
         @note: if you want to have access to the properties/functions of View set a new variable for it, e.g. view0 = list[0]
         '''
 
     def removeView(self, view):
         '''
+        @summary: removes the view from the window.
         @type view: View
-        @summary: removes a view
         '''
 
     def collectGarbage(self):
         '''
-        
+        @summary: removes views from the Window, that are no longer referenced from python objects.
         '''
 
-
 class View:
-
     position = Point
     angle = float
     angleInDegree = float
@@ -302,365 +289,124 @@ class View:
     minItemDisplayPosition = True/False
     maxItemDisplayPosition = True/False
 
-    def setViewFromCar(self, Car=None):
+    def setViewFromCar(self, Car):
         '''
-        @summary: the position of the View is placed onto the Car
+        @summary: paces the position of the view point on the position of the car.
         @type Car: ACar
         '''
 
-    def getSrcTransBoxCoord(self, corner=None):
+    def getSrcTransBoxCoord(self, cornerId):
         '''
-        @summary: used to detect the coordinates around the car
-        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
-        @note: is often combined with 'self.setSrcTransBoxCoord()'
-        @type corner: int
+        @summary: go to Arne and ask for his help.
+        @type cornerId: int
         @rtype: Point
         '''
 
-    def getDestBoxCoords(self, corner=None):
+    def getDestBoxCoords(self, cornerId):
         '''
-        @summary: used to detect the destination coordinates
-        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
-        @note: is often combined with 'self.setDestBoxCoords()'
-        @type corner: int
+        @summary: go to Arne and ask for his help.
+        @type cornerId: int
         @rtype: Point
         '''
 
-    def setSrcTransBoxCoord(self, corner=None, position=None):
+    def setSrcTransBoxCoord(self, cornerId, position):
         '''
-        @summary: used to distort the perspective of the player
-        @note: use 'self.getSrcTransBoxCoord()' beforehand to get the original coordinates
-        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
-        @type corner: int
+        @summary: go to Arne and ask for his help.
+        @type cornerId: int
         @type position: Point
         '''
 
-    def setDestBoxCoords(self, corner=None, position=None):
+    def setDestBoxCoords(self, cornerId, position):
         '''
-        @summary: used to distort the perspective of the player
-        @note: use 'self.getDestBoxCoords()' beforehand to get the original coordinates
-        @note: the 'corner' has to be a number from 0 to 3 (there are 4 corners)
-        @type corner: int
+        @summary: go to Arne and ask for his help.
+        @type cornerId: int
         @type position: Point
         '''
-
 
 class CarManager:
 
-    def loadCarConfigurations(self, filename=None):
-        '''
-        @type filename: str
-        '''
-
     def getListOfCars(self):
         '''
-        @summary: obtains a list of the two cars
+        @summary: returns a list of existing cars.
         @rtype: list(ACar)
         @note: if you want to have access to the properties/functions of ACar set a new variable for it, e.g. car0 = list[0]
         '''
 
     def collectGarbage(self):
         '''
-        
+        @summary: removes cars from the CarManager, that are no longer referenced from python objects.
         '''
 
     def createVirtualCar(self):
         '''
+        @summary: creates a VirtualCar object, that can be used to simulate a car.
         @rtype VirtualCar
         '''
 
-    def createVirtualCarWithImage(self, filename=None):
+    def createVirtualCarWithImage(self, image):
         '''
-        @type filename: str
+        @summary: creates a VirtualCar object, that can be used to simulate a car, which will be displayed with the given image.
+        @type image: Image
         @rtype: VirtualCar
         '''
 
-
 class Image:
-
     cvImage = cvImage
     width = int
     height = int
-    def createResizedCopy(self, newWidth=None, newHeight=None):
+
+    def createResizedCopy(self, width, height):
         '''
-        @summary: creates a copy with new lenghts
-        @type newWidth: int
-        @type newHeight: int
+        @summary: creates a copy of the image with the new size.
+        @type width: int
+        @type height: int
         @rtype: Image
         '''
 
-    def createRotatedCopyWithAngleInDegree(self, angleDegree=None):
+    def createRotatedCopyWithAngleInDegree(self, angleDegree):
         '''
-        @summary: creates a rotated copy (angle given in degree)
+        @summary: creates a copy of the image with the given rotation (angle given in degree).
         @type angleDegree: float
         @rtype: Image
         '''
 
-    def createRotatedCopyWithAngleInRadian(self, angleRadian=None):
+    def createRotatedCopyWithAngleInRadian(self, angleRadian):
         '''
-        @summary: creates a rotated copy (angle given in randians)
+        @summary: creates a copy of the image with the given rotation (angle given in radian).
         @type angleRadian: float
         @rtype: Image
         '''
 
-    def saveImage(self, fileName=None):
+    def saveImage(self, fileName):
         '''
-        @summary: saves an image on the given file path
+        @summary: saves the image at the given path.
         @type fileName: str
         '''
 
-
 class ACar:
-
     dispImage = Image
     position = Point
     angle = float
     angleInDegree = float
-    throttle = int
-    lowerThrottleLimitForward = int
-    upperThrottleLimitForward = int
-    lowerThrottleLimitBackward = int
-    upperThrottleLimitBackward = int
-    throttleOffset = int
-    throttleSwap = True/False
-    steeringAngle = int
-    lowerSteeringAngleLimitLeft = int
-    upperSteeringAngleLimitLeft = int
-    lowerSteeringAngleLimitRight = int
-    upperSteeringAngleLimitRight = int
-    steeringAngleOffset = int
-    steeringSwap = True/False
-
-    def setLowerThrottleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setUpperThrottleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setLowerSteeringAngleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setUpperSteeringAngleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def connectRemote(self):
-        '''
-        @summary: attempts to connect to the remote
-        '''
-
-    def disconnectRemote(self):
-        '''
-        @summary: removes the connection to the remote
-        '''
-
-    def isRemoteOn(self):
-        '''
-        @summary: checks if the remote is switched on
-        @note: usually used after 'self.connectRemote()' or 'self.disconnectRemote()'
-        '''
-
-    def isButtonPressed(self):
-        '''
-        @summary: checks out if the button on the remote is pressed at the moment
-        @note: worse than 'self.isButtonPressed' because there can occur abnormalities in the electric signal
-        '''
-
-    def wasButtonPressedSinceLastCheck(self):
-        '''
-        @summary: checks out if the button on the remote was pressed since the last check
-        @note: better than 'self.isButtonPressed' because their can occur abnormalities in the electric signal
-        '''
-
-    def setRemoteControl(self):
-        '''
-        @summary: switches to control with computer
-        @note: use 'self.setManuelControl()' to switch back
-        '''
-
-    def setManuelControl(self):
-        '''
-        @summary: switches to control with original remote
-        @note: use 'self.setRemoteControl()' to switch back
-        '''
-
 
 class VirtualCar:
-
     dispImage = Image
     position = Point
     angle = float
     angleInDegree = float
-    throttle = int
-    lowerThrottleLimitForward = int
-    upperThrottleLimitForward = int
-    lowerThrottleLimitBackward = int
-    upperThrottleLimitBackward = int
-    throttleOffset = int
-    throttleSwap = True/False
-    steeringAngle = int
-    lowerSteeringAngleLimitLeft = int
-    upperSteeringAngleLimitLeft = int
-    lowerSteeringAngleLimitRight = int
-    upperSteeringAngleLimitRight = int
-    steeringAngleOffset = int
-    steeringSwap = True/False
-
-    def setLowerThrottleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setUpperThrottleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setLowerSteeringAngleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setUpperSteeringAngleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def connectRemote(self):
-        '''
-        @summary: attempts to connect to the remote
-        '''
-
-    def disconnectRemote(self):
-        '''
-        @summary: removes the connection to the remote
-        '''
-
-    def isRemoteOn(self):
-        '''
-        @summary: checks if the remote is switched on
-        @note: usually used after 'self.connectRemote()' or 'self.disconnectRemote()'
-        '''
-
-    def isButtonPressed(self):
-        '''
-        @summary: checks out if the button on the remote is pressed at the moment
-        @note: worse than 'self.isButtonPressed' because there can occur abnormalities in the electric signal
-        '''
-
-    def wasButtonPressedSinceLastCheck(self):
-        '''
-        @summary: checks out if the button on the remote was pressed since the last check
-        @note: better than 'self.isButtonPressed' because their can occur abnormalities in the electric signal
-        '''
-
-    def setRemoteControl(self):
-        '''
-        @summary: switches to control with computer
-        @note: use 'self.setManuelControl()' to switch back
-        '''
-
-    def setManuelControl(self):
-        '''
-        @summary: switches to control with original remote
-        @note: use 'self.setRemoteControl()' to switch back
-        '''
-
 
 class RealCar:
-
     dispImage = Image
     position = Point
     angle = float
     angleInDegree = float
-    throttle = int
-    lowerThrottleLimitForward = int
-    upperThrottleLimitForward = int
-    lowerThrottleLimitBackward = int
-    upperThrottleLimitBackward = int
-    throttleOffset = int
-    throttleSwap = True/False
-    steeringAngle = int
-    lowerSteeringAngleLimitLeft = int
-    upperSteeringAngleLimitLeft = int
-    lowerSteeringAngleLimitRight = int
-    upperSteeringAngleLimitRight = int
-    steeringAngleOffset = int
-    steeringSwap = True/False
-    minPointDistance =
-    maxPointDistance =
-    frontAreaMinSize =
-    frontAreaMaxSize =
-    frontMinHSV =
-    frontMaxHSV =
-    rearAreaMinSize =
-    rearAreaMaxSize =
-    rearMinHSV =
-    rearMaxHSV =
-
-    def setLowerThrottleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setUpperThrottleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setLowerSteeringAngleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def setUpperSteeringAngleLimit(self, limit=None):
-        '''
-        @type limit = int
-        '''
-
-    def connectRemote(self):
-        '''
-        @summary: attempts to connect to the remote
-        '''
-
-    def disconnectRemote(self):
-        '''
-        @summary: removes the connection to the remote
-        '''
-
-    def isRemoteOn(self):
-        '''
-        @summary: checks if the remote is switched on
-        @note: usually used after 'self.connectRemote()' or 'self.disconnectRemote()'
-        '''
-
-    def isButtonPressed(self):
-        '''
-        @summary: checks out if the button on the remote is pressed at the moment
-        @note: worse than 'self.isButtonPressed' because there can occur abnormalities in the electric signal
-        '''
-
-    def wasButtonPressedSinceLastCheck(self):
-        '''
-        @summary: checks out if the button on the remote was pressed since the last check
-        @note: better than 'self.isButtonPressed' because their can occur abnormalities in the electric signal
-        '''
-
-    def setRemoteControl(self):
-        '''
-        @summary: switches to control with computer
-        @note: use 'self.setManuelControl()' to switch back
-        '''
-
-    def setManuelControl(self)
-        '''
-        @summary: switches to control with original remote
-        @note: use 'self.setRemoteControl()' to switch back
-        '''
+    minPointDistance = int
+    maxPointDistance = int
+    frontAreaMinSize = int
+    frontAreaMaxSize = int
+    frontMinHSV = Color
+    frontMaxHSV = Color
+    rearAreaMinSize = int
+    rearAreaMaxSize = int
+    rearMinHSV = Color
+    rearMaxHSV = Color
