@@ -10,42 +10,37 @@ import GameSounds
 from GameHelper import calcDistance
 from LightCycle import LightCycle
 from LightCycleTrail import LightCycleTrail
+import Config as Cfg
 
 
 # Script entry function.
 # It runs a Basler version of the classic computer game TRON.
 def main():
-    # Window renderer resolution parameters
-    MAIN_WINDOW_WIDTH_PX = 1920
-    MAIN_WINDOW_HEIGHT_PX = 1200
 
-    mainWindow = initMainWindow("Tron", MAIN_WINDOW_WIDTH_PX, MAIN_WINDOW_HEIGHT_PX)
+    mainWindow = initMainWindow("Tron", Cfg.MAIN_WINDOW_WIDTH_PX, Cfg.MAIN_WINDOW_HEIGHT_PX)
 
     # standingItems = mainWindow.standingItemsManager
     lyingItems = mainWindow.lyingItemsManager
 
+    # the item manager for head up displays
     frontItems = mainWindow.frontItemsManager
     frontItems.createAndAddItem(BAPI.loadImage(".\\Bilder\\Basler_Tron.png"), BAPI.Point(320, 5))
 
-    # game field size parameters, need to be same size as camera resolution
-    FIELD_WIDTH_PX = 1880
-    FIELD_HEIGHT_PX = 1200
-    BAPI.setImage4NoCameraMode(BAPI.generateField(FIELD_WIDTH_PX, FIELD_HEIGHT_PX, 40))
+    # set the field ground image in simulation mode
+    BAPI.setImage4NoCameraMode(BAPI.generateField(Cfg.FIELD_WIDTH_PX, Cfg.FIELD_HEIGHT_PX, 40))
 
-    bikes = initBikes()
+    lightCycles = initLightCycles()
 
     # one grab and calculation to determine the cars positions and angles
     img = BAPI.grabFromCamera()
     mainWindow.asyncHandleCarsAndBackground(img)
     mainWindow.wait4Asyncs()
-    for bike in bikes:
+    for bike in lightCycles:
         bike.setAngleIdToClosestMatchingAngle()
 
-    bikeTrails = initBikeTrails(lyingItems, bikes)
+    trails = initBikeTrails(lyingItems, lightCycles)
 
-    views = initViews(mainWindow, bikes)
-
-    COLLISION_DISTANCE_LIMIT_PX = 40
+    views = initViews(mainWindow, lightCycles)
 
     GameSounds.playGridIsLiveSound()
 
@@ -56,7 +51,7 @@ def main():
         mainWindow.wait4Asyncs()
 
         # Views need to be adapted here to create a smooth animation!
-        adaptViewsToFollowBikes(bikes, views)
+        adaptViewsToFollowBikes(lightCycles, views)
 
         # Basic game API code
         mainWindow.asyncCalcViews()
@@ -73,18 +68,23 @@ def main():
             # reset the game!
             for item in lyingItems.getListOfItems():
                 lyingItems.removeItem(item)
-            bikes = initBikes()
-            bikeTrails = initBikeTrails(lyingItems, bikes)
+            lightCycles = initLightCycles()
+            trails = initBikeTrails(lyingItems, lightCycles)
             GameSounds.stopSoundPlayback()
             GameSounds.playGridIsLiveSound()
 
         # bike ans biketrail behaviour
-        for bike, bikeTrail in zip(bikes, bikeTrails):
+        for bike, bikeTrail in zip(lightCycles, trails):
             bike.handleSteeringInputs()
             bike.controlSteeringAngle()
             bikeTrail.generate(bike)
 
-        handleCollisions(COLLISION_DISTANCE_LIMIT_PX, FIELD_WIDTH_PX, FIELD_HEIGHT_PX, bikes, bikeTrails)
+        handleCollisionOfLightCyclesAndTrails(Cfg.COLLISION_DISTANCE_LIMIT_TRAILS_PX, lightCycles, trails)
+        handleCollisionOfLightCyclesWithEachOther(Cfg.COLLISION_DISTANCE_LIMIT_LIGHTCYCLES_PX, lightCycles)
+        handleCollisionOfLightCyclesWithBoundaries(Cfg.COLLISION_DISTANCE_LIMIT_FIELD_BOUNDARIES_PX,
+                                                   Cfg.FIELD_WIDTH_PX,
+                                                   Cfg.FIELD_HEIGHT_PX,
+                                                   lightCycles)
 
 
 def initMainWindow(name, fieldWidthPx, fieldHeightPx):
@@ -95,7 +95,7 @@ def initMainWindow(name, fieldWidthPx, fieldHeightPx):
     return mainWindow
 
 
-def initBikes():
+def initLightCycles():
     bike0Keys = {'forwardKey':'w',
              'backwardKey':'s',
              'turnLeftKey':'a',
@@ -123,23 +123,26 @@ def initBikeTrails(graphicsObjectManager, bikes):
     return (bike0trail, bike1trail)
 
 
-def handleCollisions(distanceLimitPx, fieldWidthPx, fieldHeightPx, bikes, bikeTrails):
-
-    # collision with bike trails
-    for bikeTrail in bikeTrails:
-        collisions = bikeTrail.getCollidedObjects(bikes, distanceLimitPx)
+def handleCollisionOfLightCyclesAndTrails(distanceLimitPx, lightCycles, trails):
+    # collision with light cycle trails trails
+    for trail in trails:
+        collisions = trail.getCollidedObjects(lightCycles, distanceLimitPx)
         if len(collisions) > 0:
             for collision in collisions:
-                bikes[collision[0]._carId].destroy()
-
-    # collision bikes with each other
-    if calcDistance(bikes[0].getPosition(), bikes[1].getPosition()) < distanceLimitPx:
-        for bike in bikes:
+                lightCycles[collision[0]._carId].destroy()
+                
+                
+def handleCollisionOfLightCyclesWithEachOther(distanceLimitPx, lightCycles):
+    # collision lightCycles with each other
+    if calcDistance(lightCycles[0].getPosition(), lightCycles[1].getPosition()) < distanceLimitPx:
+        for bike in lightCycles:
             bike.destroy()
 
+
+def handleCollisionOfLightCyclesWithBoundaries(distanceLimitPx, fieldWidthPx, fieldHeightPx, lightCycles):
     # collision with field boundaries
     distanceLimitForFieldLimitsPx = distanceLimitPx // 4
-    for bike in bikes:
+    for bike in lightCycles:
         position = bike.getPosition()
         if (position.x < distanceLimitForFieldLimitsPx
             or position.x > (fieldWidthPx - distanceLimitForFieldLimitsPx)
