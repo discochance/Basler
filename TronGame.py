@@ -42,7 +42,7 @@ def main():
 
     views = initViews(mainWindow, lightCycles)
 
-    GameSounds.playGridIsLiveSound()
+    #GameSounds.playGridIsLiveSound()
 
     while True:
         # Basic game API code
@@ -71,7 +71,7 @@ def main():
             lightCycles = initLightCycles()
             trails = initBikeTrails(lyingItems, lightCycles)
             GameSounds.stopSoundPlayback()
-            GameSounds.playGridIsLiveSound()
+            #qGameSounds.playGridIsLiveSound()
 
         # bike ans biketrail behaviour
         for bike, bikeTrail in zip(lightCycles, trails):
